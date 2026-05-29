@@ -50,13 +50,66 @@ ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
 <img src="man/figures/README-ggplot-example-1.png"
 style="width:100.0%" />
 
+### Colorbars
+
+``` r
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("thermal") +
+    guides(fill = guide_colourbar_h(title = "Density")) +
+    labs(title = "Old Faithful eruption density",
+         x = "Waiting time (min)", y = "Eruption duration (min)") +
+    theme_obis(legend_position = "bottom")
+```
+
+<img src="man/figures/README-colorbar-light-1.png"
+style="width:100.0%" />
+
+``` r
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("mako") +
+    guides(fill = guide_colourbar_h(title = "Density",
+                                    barwidth = grid::unit(14, "lines"))) +
+    labs(title = "Old Faithful eruption density",
+         x = "Waiting time (min)", y = "Eruption duration (min)") +
+    theme_obis_dark(legend_position = "bottom")
+```
+
+<img src="man/figures/README-colorbar-dark-1.png"
+style="width:100.0%" />
+
 ### Static maps
 
 ``` r
 grey_map_s()
 ```
 
-<img src="man/figures/README-static-example-1.png"
+<img src="man/figures/README-static-basemap-1.png"
+style="width:100.0%" />
+
+Focused regional view with gridded occurrence data:
+
+``` r
+occ <- robis::occurrence(taxonid = 126983, startdate = "2010-01-01")
+#> 
+Retrieved 5000 records of approximately 10940 (45%)
+Retrieved 10000 records of
+#> approximately 10940 (91%)
+Retrieved 10940 records of approximately 10940 (100%)
+
+grey_map_s(plot_xlim = c(-95, 15), plot_ylim = c(10, 70)) |>
+    add_species_data(
+        grid_data     = occ_to_geohashgrid(occ, grid_res = 3),
+        limit_by_bbox = FALSE,
+        plot_xlim     = c(-95, 15),
+        plot_ylim     = c(10, 70)
+    )
+#> Coordinate system already present.
+#> ℹ Adding new coordinate system, which will replace the existing one.
+```
+
+<img src="man/figures/README-static-species-1.png"
 style="width:100.0%" />
 
 ### Dynamic maps
@@ -91,7 +144,7 @@ devtools::build_readme()
 devtools::build_vignettes()
 ```
 
-====
+------------------------------------------------------------------------
 
 Developed by the [OBIS Secretariat](https://obis.org) · Hosted under the
 [Intergovernmental Oceanographic Commission

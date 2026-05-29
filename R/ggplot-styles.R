@@ -224,6 +224,123 @@ theme_obis_dark <- function(
         )
 }
 
+# ── Publication theme ──────────────────────────────────────────────────────────
+
+#' Publication-quality ggplot2 theme for OBIS
+#'
+#' A minimal, journal-ready theme following the visual conventions of top
+#' scientific publications (Nature, Science, Cell, One Earth). Key
+#' characteristics: clean L-shaped axes with outward tick marks, no background
+#' grid, and a compact layout suited to single- and multi-panel figures. Call
+#' [obis_load_fonts()] once per session to enable the Roboto font.
+#'
+#' The default `base_size` of `11` is comfortable for screen use and for
+#' figures saved at standard dimensions (≈ 7 × 5 in). When targeting the
+#' narrow column widths of print journals (e.g. 3.5 in single-column), either
+#' reduce `base_size` to 7–8 or use [obis_ggsave()], which rescales all
+#' elements proportionally to the output dimensions.
+#'
+#' @param base_size Numeric. Base font size in pt. Default `11`. Reduce to
+#'   7–8 pt when exporting at narrow journal column widths (≤ 3.5 in), or use
+#'   [obis_ggsave()] to handle scaling automatically.
+#' @param base_family Character. Base font family. Default `"roboto"`. Swap for
+#'   `"helvetica"` or `"arial"` if those are available on your system.
+#' @param legend_position Character or `"none"`. Position of the legend.
+#'   Default `"right"`.
+#' @param grid Character. Reference lines to draw: `"none"` (default, typical
+#'   for Nature / Science), `"y"` for subtle major y-axis lines only, or
+#'   `"xy"` for both axes.
+#'
+#' @return A [ggplot2::theme] object.
+#' @export
+#'
+#' @examples
+#' library(ggplot2)
+#' ggplot(mtcars, aes(wt, mpg)) +
+#'     geom_point(size = 1.5) +
+#'     labs(title = "Fuel efficiency", x = "Weight (1000 lbs)", y = "MPG") +
+#'     theme_obis_pub()
+theme_obis_pub <- function(
+    base_size = 11,
+    base_family = "roboto",
+    legend_position = "right",
+    grid = c("none", "y", "xy")
+) {
+    grid <- match.arg(grid)
+
+    grid_line <- ggplot2::element_line(color = "#d0d0d0", linewidth = 0.25)
+
+    t <- ggplot2::theme_classic(base_size = base_size, base_family = base_family) %+replace%
+        ggplot2::theme(
+            # Panel
+            panel.background  = ggplot2::element_rect(fill = "white", color = NA),
+            panel.grid.major  = ggplot2::element_blank(),
+            panel.grid.minor  = ggplot2::element_blank(),
+            # Plot area
+            plot.background   = ggplot2::element_rect(fill = "white", color = NA),
+            plot.margin       = ggplot2::margin(6, 8, 6, 6),
+            plot.title        = ggplot2::element_text(
+                face = "bold", size = base_size * 1.1, color = "black",
+                margin = ggplot2::margin(b = 3), hjust = 0
+            ),
+            plot.subtitle     = ggplot2::element_text(
+                size = base_size, color = "#444444",
+                margin = ggplot2::margin(b = 4), hjust = 0
+            ),
+            plot.caption      = ggplot2::element_text(
+                size = base_size * 0.9, color = "#555555",
+                hjust = 0, margin = ggplot2::margin(t = 5)
+            ),
+            # Axes — black L-frame with outward ticks
+            axis.line         = ggplot2::element_line(color = "black", linewidth = 0.4),
+            axis.ticks        = ggplot2::element_line(color = "black", linewidth = 0.3),
+            axis.ticks.length = ggplot2::unit(3, "pt"),
+            axis.title        = ggplot2::element_text(size = base_size, color = "black"),
+            axis.title.x      = ggplot2::element_text(
+                margin = ggplot2::margin(t = 5), hjust = 0.5
+            ),
+            axis.title.y      = ggplot2::element_text(
+                margin = ggplot2::margin(r = 5), hjust = 0.5, angle = 90
+            ),
+            axis.text         = ggplot2::element_text(
+                size = base_size * 0.9, color = "black"
+            ),
+            axis.text.x       = ggplot2::element_text(margin = ggplot2::margin(t = 3)),
+            axis.text.y       = ggplot2::element_text(margin = ggplot2::margin(r = 3)),
+            # Legend — no box, tight spacing
+            legend.position   = legend_position,
+            legend.background = ggplot2::element_blank(),
+            legend.key        = ggplot2::element_blank(),
+            legend.key.size   = ggplot2::unit(0.75, "lines"),
+            legend.margin     = ggplot2::margin(2, 2, 2, 2),
+            legend.title      = ggplot2::element_text(
+                size = base_size, face = "bold", color = "black"
+            ),
+            legend.text       = ggplot2::element_text(
+                size = base_size * 0.9, color = "black"
+            ),
+            legend.spacing.y  = ggplot2::unit(1.5, "pt"),
+            # Facet strips — no colored box, label above panel
+            strip.background  = ggplot2::element_blank(),
+            strip.text        = ggplot2::element_text(
+                face = "bold", size = base_size, color = "black",
+                margin = ggplot2::margin(b = 3)
+            ),
+            complete = TRUE
+        )
+
+    if (grid == "y") {
+        t <- t + ggplot2::theme(panel.grid.major.y = grid_line)
+    } else if (grid == "xy") {
+        t <- t + ggplot2::theme(
+            panel.grid.major.y = grid_line,
+            panel.grid.major.x = grid_line
+        )
+    }
+
+    t
+}
+
 # ── Categorical color scales ───────────────────────────────────────────────────
 
 #' Colorblind-safe categorical color scale
@@ -500,5 +617,84 @@ obis_add_logo <- function(
             ) +
             cowplot::draw_grob(ioc_grob,  x = x_ioc,  y = y_ioc,  width = ioc_w,  height = ioc_h) +
             cowplot::draw_grob(obis_grob, x = x_obis, y = y_obis, width = obis_w, height = obis_h)
+    )
+}
+
+# ── Scaling-aware save ─────────────────────────────────────────────────────────
+
+#' Save a ggplot with proportionally scaled text
+#'
+#' A wrapper around [ggplot2::ggsave()] that keeps all theme elements (text,
+#' lines, points, legend keys) at the same *apparent* size regardless of the
+#' output dimensions. It works by rendering the plot at a reference size and
+#' then letting `ggsave` scale the raster to the target dimensions, so a figure
+#' intended for a 3.5 × 2.5 in journal column looks identical whether saved at
+#' that size or at 7 × 5 in for a slide.
+#'
+#' The scaling factor is computed as
+#' \eqn{\sqrt{(w \times h) / (w_\text{ref} \times h_\text{ref})}}{sqrt((w*h)/(ref_w*ref_h))},
+#' the geometric mean of the area ratio, so both dimensions are treated equally.
+#'
+#' @param filename File path for the output (extension determines format).
+#' @param plot A ggplot2 (or cowplot) object. Defaults to the last plot
+#'   displayed ([ggplot2::last_plot()]).
+#' @param width,height Numeric. Target output dimensions in `units`.
+#' @param ref_width,ref_height Numeric. Reference dimensions at which the plot
+#'   was designed. Defaults match [ggplot2::ggsave()] defaults (`7` × `5` in).
+#'   Adjust if you authored the plot at a different preview size.
+#' @param units Character. Units for `width`, `height`, `ref_width`, and
+#'   `ref_height`. One of `"in"` (default), `"cm"`, `"mm"`, or `"px"`.
+#' @param dpi Numeric. Output resolution. Default `300` (publication quality).
+#' @param bg Character. Background colour. Default `"white"`.
+#' @param ... Additional arguments passed to [ggplot2::ggsave()].
+#'
+#' @return The `filename` path, invisibly (same as [ggplot2::ggsave()]).
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(ggplot2)
+#' p <- ggplot(mtcars, aes(wt, mpg)) +
+#'     geom_point(size = 1.5) +
+#'     labs(x = "Weight (1000 lbs)", y = "MPG") +
+#'     theme_obis_pub()
+#'
+#' # Single-column journal figure (3.5 × 2.5 in) — text scales down
+#' obis_ggsave("fig1_single.pdf", p, width = 3.5, height = 2.5)
+#'
+#' # Double-column figure (7 × 5 in) — same apparent text size
+#' obis_ggsave("fig1_double.pdf", p, width = 7, height = 5)
+#'
+#' # Poster panel (14 × 10 in) — text scales up
+#' obis_ggsave("fig1_poster.pdf", p, width = 14, height = 10)
+#' }
+obis_ggsave <- function(
+    filename,
+    plot      = ggplot2::last_plot(),
+    width     = 7,
+    height    = 5,
+    ref_width  = 7,
+    ref_height = 5,
+    units     = "in",
+    dpi       = 300,
+    bg        = "white",
+    ...
+) {
+    # Geometric-mean scale factor: > 1 for larger outputs, < 1 for smaller
+    scale <- sqrt((width * height) / (ref_width * ref_height))
+
+    # Render at ref dimensions, then let ggsave scale the canvas to target size.
+    # Output file ends up at exactly width × height because:
+    #   (width / scale) * scale == width  (and same for height)
+    ggplot2::ggsave(
+        filename = filename,
+        plot     = plot,
+        width    = width  / scale,
+        height   = height / scale,
+        scale    = scale,
+        units    = units,
+        dpi      = dpi,
+        bg       = bg,
+        ...
     )
 }

@@ -579,8 +579,8 @@ add_species_data <- function(
     if (limit_by_bbox) {
         p <- p +
             ggplot2::coord_sf(
-                xlim = sf::st_bbox(grid_vec)[c(1,3)],
-                ylim = sf::st_bbox(grid_vec)[c(2,4)],
+                xlim = sf::st_bbox(grid_data)[c(1,3)],
+                ylim = sf::st_bbox(grid_data)[c(2,4)],
                 expand = TRUE
             )
     } else {

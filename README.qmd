@@ -10,7 +10,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  dpi = 150
 )
 ```
 
@@ -56,10 +57,47 @@ ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
     theme_obis(legend_position = "bottom")
 ```
 
+### Colorbars
+
+```{r colorbar-light, fig.width = 7, fig.height = 4}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("thermal") +
+    guides(fill = guide_colourbar_h(title = "Density")) +
+    labs(title = "Old Faithful eruption density",
+         x = "Waiting time (min)", y = "Eruption duration (min)") +
+    theme_obis(legend_position = "bottom")
+```
+
+```{r colorbar-dark, fig.width = 7, fig.height = 4}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("mako") +
+    guides(fill = guide_colourbar_h(title = "Density",
+                                    barwidth = grid::unit(14, "lines"))) +
+    labs(title = "Old Faithful eruption density",
+         x = "Waiting time (min)", y = "Eruption duration (min)") +
+    theme_obis_dark(legend_position = "bottom")
+```
+
 ### Static maps
 
-```{r static-example, fig.width = 7, fig.height = 4}
+```{r static-basemap, fig.width = 7, fig.height = 4}
 grey_map_s()
+```
+
+Focused regional view with gridded occurrence data:
+
+```{r static-species, fig.width = 7, fig.height = 4.5}
+occ <- robis::occurrence(taxonid = 126983, startdate = "2010-01-01")
+
+grey_map_s(plot_xlim = c(-95, 15), plot_ylim = c(10, 70)) |>
+    add_species_data(
+        grid_data     = occ_to_geohashgrid(occ, grid_res = 3),
+        limit_by_bbox = FALSE,
+        plot_xlim     = c(-95, 15),
+        plot_ylim     = c(10, 70)
+    )
 ```
 
 ### Dynamic maps
@@ -93,7 +131,7 @@ devtools::build_readme()
 devtools::build_vignettes()
 ```
 
-====
+------
 
 Developed by the [OBIS Secretariat](https://obis.org) · Hosted under the
 [Intergovernmental Oceanographic Commission (IOC)](https://www.ioc.unesco.org)

@@ -111,6 +111,113 @@ ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
     theme_obis_dark()
 ```
 
+## Publication theme — `theme_obis_pub()`
+
+`theme_obis_pub()` follows the visual conventions of top scientific journals
+(Nature, Science, Cell, One Earth). Key characteristics:
+
+- **L-shaped axes** — bottom and left axis lines only, no box, from `theme_classic()`.
+- **Outward tick marks** — black, short (3 pt), with no grid by default.
+- **No legend box** — minimal legend with tight spacing.
+- **Blank facet strips** — bold label above each panel, no coloured background.
+- **Compact margins** — reduces whitespace around the plot area.
+
+The default `base_size` is `11`, comfortable for screen preview at standard
+figure dimensions (7 × 5 in). Reduce to 7–8 pt for narrow journal column widths,
+or let `obis_ggsave()` handle the scaling automatically.
+
+```{r pub-basic}
+ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(size = 1.5) +
+    labs(title = "Fuel efficiency",
+         x = "Weight (1000 lbs)", y = "MPG") +
+    theme_obis_pub()
+```
+
+Combine with the colorblind-safe categorical scale and a legend:
+
+```{r pub-categorical}
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+    geom_point(size = 1.5) +
+    scale_color_obis_cat() +
+    labs(title = "Iris measurements",
+         x = "Sepal length (cm)", y = "Petal length (cm)") +
+    theme_obis_pub(legend_position = "bottom")
+```
+
+Subtle y-axis reference lines can be enabled with `grid = "y"` for plots where
+reading precise values matters:
+
+```{r pub-grid}
+ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(size = 1.5) +
+    labs(title = "With reference lines", x = "Weight (1000 lbs)", y = "MPG") +
+    theme_obis_pub(grid = "y")
+```
+
+Facets follow the same blank-strip convention used by many journals (panel
+labels are typically added later via cowplot or patchwork):
+
+```{r pub-facets}
+ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(size = 1.5) +
+    facet_wrap(~cyl) +
+    labs(title = "Fuel efficiency by cylinder count",
+         x = "Weight (1000 lbs)", y = "MPG") +
+    theme_obis_pub()
+```
+
+```{r pub-export}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("haline") +
+    guides(fill = guide_colourbar_h(title = "Density")) +
+    labs(x = "Waiting time (min)", y = "Eruption duration (min)") +
+    theme_obis_pub(legend_position = "bottom")
+```
+
+## Saving publication figures — `obis_ggsave()`
+
+A common frustration with `ggsave()` is that text and other theme elements are
+specified in absolute points, so they appear proportionally smaller when you
+save a figure at a larger physical size. `obis_ggsave()` fixes this by
+rendering the plot at a **reference size** (default 7 × 5 in, matching
+ggplot2's screen default) and then scaling the canvas to the target dimensions.
+Text always occupies the same fraction of the figure.
+
+The scaling factor is the geometric mean of the area ratio:
+\(s = \sqrt{(w \times h)\;/\;(w_\text{ref} \times h_\text{ref})}\).
+
+```{r obis-ggsave-demo, eval = FALSE}
+p_pub <- ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+    geom_point(size = 1.5) +
+    scale_color_obis_cat() +
+    labs(title = "Iris measurements",
+         x = "Sepal length (cm)", y = "Petal length (cm)") +
+    theme_obis_pub()
+
+# Single-column journal width (3.5 × 2.5 in) — text scales down proportionally
+obis_ggsave("fig1_single.pdf", p_pub, width = 3.5, height = 2.5)
+
+# Double-column (7 × 5 in) — same apparent text size as on screen
+obis_ggsave("fig1_double.pdf", p_pub, width = 7, height = 5)
+
+# Poster panel (14 × 10 in) — text scales up, remains legible
+obis_ggsave("fig1_poster.pdf", p_pub, width = 14, height = 10)
+
+# PNG for journal submission at 300 dpi
+obis_ggsave("fig1.png", p_pub, width = 3.5, height = 2.5, dpi = 300)
+```
+
+If your figures are authored at a non-default preview size, adjust `ref_width`
+and `ref_height` accordingly:
+
+```{r obis-ggsave-custom-ref, eval = FALSE}
+# Plot designed for a 5 × 3.5 in RStudio preview
+obis_ggsave("fig1.pdf", p_pub, width = 3.5, height = 2.5,
+            ref_width = 5, ref_height = 3.5)
+```
+
 ## Categorical color scales
 
 `scale_color_obis_cat()` and `scale_fill_obis_cat()` apply one of two
