@@ -1,0 +1,84 @@
+/* maplibre_h3 widget styles */
+
+.maplibre-h3-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.maplibre-h3-container .maplibregl-map {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+/* DeckGL canvas sits on top of MapLibre */
+.maplibre-h3-container canvas.deck-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;  /* let MapLibre handle mouse events */
+}
+
+/* Click-to-activate overlay */
+.maplibre-h3-click-message {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.85);
+  color: #333;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  pointer-events: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* Tooltip */
+.deck-tooltip {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Legend */
+.maplibre-h3-legend {
+  position: absolute;
+  bottom: 40px;
+  right: 10px;
+  background: rgba(255,255,255,0.9);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 11px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  z-index: 5;
+  min-width: 120px;
+}
+
+.maplibre-h3-legend .legend-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.maplibre-h3-legend .legend-bar {
+  height: 10px;
+  border-radius: 2px;
+  margin-bottom: 4px;
+}
+
+.maplibre-h3-legend .legend-labels {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+}

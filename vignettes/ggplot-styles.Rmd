@@ -1,0 +1,322 @@
+---
+title: "ggplot2 Styles and Themes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ggplot2 Styles and Themes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+```
+
+```{r setup}
+library(obisrecipes)
+library(ggplot2)
+```
+
+The `obisrecipes` package ships a complete ggplot2 styling system: two themes
+(`theme_obis()` for light plots and `theme_obis_dark()` for a deep-ocean look),
+colorblind-safe categorical and continuous color scales, a horizontal colourbar
+guide, and a helper that overlays the OBIS + IOC logos on any finished plot.
+
+Load the Roboto font once per session before rendering:
+
+```{r fonts, eval = FALSE}
+obis_load_fonts()
+```
+
+## Light theme — `theme_obis()`
+
+`theme_obis()` provides a clean white background with subtle blue-grey accents.
+
+```{r theme-obis-basic}
+ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(color = "#0072B2", size = 2) +
+    labs(title = "Fuel efficiency", subtitle = "Weight vs. miles per gallon",
+         x = "Weight (1000 lbs)", y = "MPG") +
+    theme_obis()
+```
+
+Axis titles are placed at the far end of their axis by default
+(`corner_axis_titles = TRUE`). Set it to `FALSE` for centered titles:
+
+```{r theme-obis-centered}
+ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(color = "#0072B2", size = 2) +
+    labs(title = "Fuel efficiency", subtitle = "Weight vs. miles per gallon",
+         x = "Weight (1000 lbs)", y = "MPG") +
+    theme_obis(corner_axis_titles = FALSE)
+```
+
+Faceted plots and legend placement also work out of the box:
+
+```{r theme-obis-facets}
+ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(color = "#0072B2", size = 2) +
+    facet_wrap(~cyl) +
+    labs(title = "Fuel efficiency by cylinder count") +
+    theme_obis()
+```
+
+```{r theme-obis-legend}
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+    geom_point(size = 2) +
+    labs(title = "Iris measurements") +
+    theme_obis(legend_position = "bottom")
+```
+
+Use `base_size` to scale everything up for presentations:
+
+```{r theme-obis-presentation}
+ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(color = "#009E73", size = 2.5) +
+    labs(title = "Presentation-ready", x = "Weight", y = "MPG") +
+    theme_obis(base_size = 14)
+```
+
+## Dark marine theme — `theme_obis_dark()`
+
+`theme_obis_dark()` uses a deep navy background that pairs well with the
+`"mako"`, `"thermal"`, and `"haline"` continuous scales.
+
+```{r theme-dark-basic}
+ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(color = "#56B4E9", size = 2) +
+    labs(title = "Deep ocean style", subtitle = "Weight vs. miles per gallon",
+         x = "Weight (1000 lbs)", y = "MPG") +
+    theme_obis_dark()
+```
+
+```{r theme-dark-heatmap}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    labs(title = "Old Faithful eruption density") +
+    scale_fill_obis_cont("thermal") +
+    theme_obis_dark(legend_position = "bottom")
+```
+
+```{r theme-dark-facets}
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+    geom_point(size = 2) +
+    facet_wrap(~Species) +
+    labs(title = "Iris by species") +
+    scale_color_obis_cat() +
+    theme_obis_dark()
+```
+
+## Categorical color scales
+
+`scale_color_obis_cat()` and `scale_fill_obis_cat()` apply one of two
+colorblind-safe discrete palettes.
+
+### Okabe-Ito (default)
+
+```{r cat-okabe-color}
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+    geom_point(size = 2.5) +
+    scale_color_obis_cat() +
+    labs(title = "Okabe-Ito palette", color = "Species") +
+    theme_obis()
+```
+
+### Paul Tol bright
+
+```{r cat-tol-color}
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+    geom_point(size = 2.5) +
+    scale_color_obis_cat(palette = "tol") +
+    labs(title = "Tol bright palette", color = "Species") +
+    theme_obis()
+```
+
+### Fill variants
+
+```{r cat-fill-bar}
+ggplot(mpg, aes(class, fill = drv)) +
+    geom_bar(position = "dodge") +
+    scale_fill_obis_cat() +
+    labs(title = "Drive type by vehicle class", x = NULL, fill = "Drive") +
+    theme_obis()
+```
+
+## Continuous color scales
+
+`scale_fill_obis_cont()` and `scale_color_obis_cont()` offer five
+perceptually uniform palettes:
+
+| Palette | Recommended for |
+|---------|-----------------|
+| `"mako"` | abundance, density |
+| `"cividis"` | general-purpose (CVD-optimized) |
+| `"thermal"` | sea surface temperature |
+| `"haline"` | salinity |
+| `"deep"` | depth / bathymetry |
+
+```{r cont-mako}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("mako") +
+    labs(title = "Mako — density", x = "Waiting (min)", y = "Eruption (min)") +
+    theme_obis()
+```
+
+```{r cont-thermal}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("thermal") +
+    labs(title = "Thermal — SST style") +
+    theme_obis_dark()
+```
+
+```{r cont-haline}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("haline") +
+    labs(title = "Haline — salinity style") +
+    theme_obis()
+```
+
+```{r cont-deep}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("deep", direction = -1) +
+    labs(title = "Deep — bathymetry style (reversed)") +
+    theme_obis()
+```
+
+Use `direction = -1` to reverse any palette. The scales also work on the
+`color` aesthetic for scatter plots:
+
+```{r cont-color-scatter}
+ggplot(mtcars, aes(wt, mpg, color = hp)) +
+    geom_point(size = 3) +
+    scale_color_obis_cont("haline") +
+    labs(title = "Continuous color on points", color = "Horsepower") +
+    theme_obis()
+```
+
+## Horizontal colourbar — `guide_colourbar_h()`
+
+`guide_colourbar_h()` returns a thin horizontal colourbar styled similarly to
+matplotlib's default. Use it with `guides()` when placing the legend at the
+bottom.
+
+```{r colourbar-basic}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("thermal") +
+    guides(fill = guide_colourbar_h(title = "Density")) +
+    labs(title = "Horizontal colourbar", x = "Waiting (min)", y = "Eruption (min)") +
+    theme_obis(legend_position = "bottom")
+```
+
+Adjust width and title position as needed:
+
+```{r colourbar-custom}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("haline") +
+    guides(fill = guide_colourbar_h(
+        title          = "Density",
+        barwidth       = grid::unit(16, "lines"),
+        title_position = "bottom",
+        title_hjust    = 0
+    )) +
+    labs(title = "Wider bar, bottom title") +
+    theme_obis(legend_position = "bottom")
+```
+
+```{r colourbar-dark}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("mako") +
+    guides(fill = guide_colourbar_h(title = "Density")) +
+    labs(title = "Dark theme with colourbar") +
+    theme_obis_dark(legend_position = "bottom")
+```
+
+## OBIS logo overlay — `obis_add_logo()`
+
+`obis_add_logo()` overlays the OBIS and IOC logos at any corner of a finished
+plot using `cowplot`. Pass `fig_asp = width / height` to match the dimensions
+you plan to use in `ggsave()`.
+
+```{r logo-default}
+p_light <- ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(color = "#0072B2", size = 2) +
+    labs(title = "Fuel efficiency", subtitle = "Weight vs. miles per gallon",
+         x = "Weight (1000 lbs)", y = "MPG") +
+    theme_obis()
+
+obis_add_logo(p_light)
+```
+
+```{r logo-positions}
+obis_add_logo(p_light, position = "bottomleft")
+obis_add_logo(p_light, position = "topright")
+```
+
+```{r logo-size}
+obis_add_logo(p_light, logo_size = 0.10)
+```
+
+The `fig_asp` argument corrects logo proportions to match a specific output
+size (e.g. 8 × 6 inches):
+
+```{r logo-aspect}
+obis_add_logo(p_light, fig_asp = 8 / 6)
+```
+
+Logos also work on dark theme plots:
+
+```{r logo-dark}
+p_dark <- ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("thermal") +
+    guides(fill = guide_colourbar_h(title = "Density")) +
+    labs(title = "Old Faithful eruption density",
+         x = "Waiting time (min)", y = "Eruption duration (min)") +
+    theme_obis_dark(legend_position = "bottom")
+
+obis_add_logo(p_dark)
+```
+
+## Putting it all together
+
+A combined plot mixing categorical shape and continuous color scales with the
+horizontal colourbar:
+
+```{r combined}
+ggplot(mtcars, aes(wt, mpg, color = hp, shape = factor(cyl))) +
+    geom_point(size = 3) +
+    scale_color_obis_cont("mako") +
+    scale_shape_manual(values = c(16, 17, 18)) +
+    guides(color = guide_colourbar_h(title = "Horsepower",
+                                     barwidth = grid::unit(8, "lines"))) +
+    labs(title = "Combined scales", x = "Weight", y = "MPG",
+         shape = "Cylinders") +
+    theme_obis(legend_position = "bottom")
+```
+
+A full dark marine look with title, subtitle, and caption:
+
+```{r full-dark}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("thermal") +
+    guides(fill = guide_colourbar_h(title = "Density")) +
+    labs(
+        title    = "Old Faithful eruption patterns",
+        subtitle = "Kernel density estimate",
+        caption  = "Source: R datasets",
+        x = "Waiting time (min)", y = "Eruption duration (min)"
+    ) +
+    theme_obis_dark(legend_position = "bottom")
+```

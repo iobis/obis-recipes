@@ -1,0 +1,17 @@
+dependencies:
+  - name: h3-js
+    version: 4.1.0
+    src:
+      href: https://unpkg.com/h3-js@4.1.0/dist
+    script: h3-js.umd.js
+  - name: maplibre-gl
+    version: 4.7.1
+    src:
+      href: https://unpkg.com/maplibre-gl@4.7.1/dist
+    script: maplibre-gl.js
+    stylesheet: maplibre-gl.css
+  - name: deck-gl
+    version: 9.0.7
+    src:
+      href: https://unpkg.com/deck.gl@9.0.7
+    script: dist.min.js
