@@ -89,3 +89,6 @@ Interactive WebGL maps via mapgl and the DeckGL H3 widget.
   :
 
   Shiny render function for `maplibre_h3`
+
+- [`fit_bounds()`](https://iobis.github.io/obis-recipes/reference/fit_bounds.md)
+  : Fit a map to bounds

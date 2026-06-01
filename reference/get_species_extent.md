@@ -1,7 +1,9 @@
 # Get the geographic extent of a species from OBIS
 
 Queries the OBIS API occurrence grid endpoint and returns an `sf` object
-that can be passed to `fit_bounds()` to zoom a map to the species range.
+that can be passed to
+[`fit_bounds()`](https://iobis.github.io/obis-recipes/reference/fit_bounds.md)
+to zoom a map to the species range.
 
 ## Usage
 

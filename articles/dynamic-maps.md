@@ -21,8 +21,7 @@ The workflow mirrors the static-map approach:
 
 > **Note:** All examples in this vignette require an internet connection
 > because the map tiles and OBIS occurrence data are fetched at render
-> time. The code chunks are marked `eval = FALSE` to allow offline
-> builds; run them interactively to see the output.
+> time.
 
 ## Basemaps
 
@@ -146,10 +145,13 @@ can also be called directly to preview colours or pass them to other
 ``` r
 
 obis_pal("thermal", 5)
+#> [1] "#042333" "#5580B8" "#CDE6C9" "#F3BA3B" "#B12010"
 #> [1] "#042333" "#4a69a9" "#cde6c9" "#f0a120" "#b12010"
 
 obis_pal("rdbu", 7)
+#> [1] "#053061" "#3783BB" "#A6CFE3" "#F7F7F7" "#F7B799" "#CA4841" "#67001F"
 obis_pal("blues", 4, direction = -1)  # reversed: dark → light
+#> [1] "#08306B" "#3786C0" "#ABCFE5" "#F7FBFF"
 ```
 
 ## Map controls
@@ -182,10 +184,22 @@ layer function
 ``` r
 
 library(duckdb)
+#> Loading required package: DBI
 library(h3jsr)
 library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 
 con <- dbConnect(duckdb())
+
+dbSendQuery(con, "install httpfs; load httpfs;")
+#> <duckdb_result d6d30 connection=bf2f0 statement='install httpfs; load httpfs;'>
 
 df <- dbGetQuery(con, "
     SELECT records, cell
@@ -223,12 +237,12 @@ or any per-H3-cell metric.
 ``` r
 
 # df from the duckdb query above
-maplibre_h3(df, center = c(3.5, 55), zoom = 4)
+maplibre_h3(df, center = c(-50, -10), zoom = 2)
 ```
 
 Enable 3-D extrusion with `extruded = TRUE`:
 
 ``` r
 
-maplibre_h3(df, extruded = TRUE, elevation_scale = 1000)
+maplibre_h3(df, center = c(-50, -10), zoom = 2, extruded = TRUE, elevation_scale = 1000)
 ```
