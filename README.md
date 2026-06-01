@@ -196,14 +196,14 @@ grey_map() |>
     add_species_data(taxonid = 126436, legend = TRUE)
 ```
 
-![dynamic-map](man/figures/dynamic-map1.png)
+![](man/figures/dynamic-map1.png)
 
 ``` r
 grey_map(projection = "mercator") |>
     add_species_data(taxonid = 126436, legend = TRUE)
 ```
 
-![dynamic-map2](man/figures/dynamic-map2.png)
+![](man/figures/dynamic-map2.png)
 
 Using H3 grid (first example uses h3j source from the [`mapgl`
 package](https://walker-data.com/mapgl/reference/add_h3j_source.html),
@@ -250,11 +250,11 @@ maplibre_h3(df, center = c(-50, -10), zoom = 2)
 maplibre_h3(df, center = c(-50, -10), extruded = TRUE, elevation_scale = 3000)
 ```
 
-![dynamic-map3](man/figures/dynamic-map3.png)
+![](man/figures/dynamic-map3.png)
 
-![dynamic-map4](man/figures/dynamic-map4.png)
+![](man/figures/dynamic-map4.png)
 
-![dynamic-map5](man/figures/dynamic-map5.png)
+![](man/figures/dynamic-map5.png)
 
 ## Vignettes
 

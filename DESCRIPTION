@@ -18,6 +18,26 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Depends:
     R (>= 4.1)
+Imports:
+    a5R,
+    cowplot,
+    dplyr,
+    geohashTools,
+    ggplot2,
+    h3jsr,
+    htmltools,
+    htmlwidgets,
+    httr2,
+    jsonlite,
+    mapgl,
+    png,
+    rnaturalearth,
+    robis,
+    rsvg,
+    scales,
+    sf,
+    showtext,
+    sysfonts
 LazyData: true
 Suggests:
     knitr,
