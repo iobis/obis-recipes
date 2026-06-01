@@ -1,0 +1,11 @@
+pandoc: 3.8.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  dynamic-maps: dynamic-maps.html
+  ggplot-styles: ggplot-styles.html
+  static-maps: static-maps.html
+last_built: 2026-06-01T13:42Z
+urls:
+  reference: https://iobis.github.io/obis-recipes/reference
+  article: https://iobis.github.io/obis-recipes/articles
