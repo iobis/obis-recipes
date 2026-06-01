@@ -10,7 +10,7 @@ scale_color_obis_cat(palette = "okabe_ito", ...)
 scale_fill_obis_cat(palette = "okabe_ito", ...)
 }
 \arguments{
-\item{palette}{Character. One of \code{"okabe_ito"} or \code{"tol"}.
+\item{palette}{Character. One of \code{"okabe_ito"}, \code{"tol"}, or \code{"ibm"}.
 Default \code{"okabe_ito"}.}
 
 \item{...}{Additional arguments passed to \code{\link[ggplot2:scale_manual]{ggplot2::scale_color_manual()}}.}
@@ -20,11 +20,13 @@ A ggplot2 scale object.
 }
 \description{
 Applies a discrete, colorblind-safe palette to the \code{color} aesthetic.
-Two palettes are available:
+Three palettes are available:
 \itemize{
 \item \code{"okabe_ito"} — the Okabe-Ito 8-color palette (default), widely
 recommended for colorblind accessibility.
 \item \code{"tol"} — Paul Tol's 7-color bright scheme, a good alternative.
+\item \code{"ibm"} — IBM's 5-color colorblind-safe palette (blue, purple, magenta,
+orange, gold), designed for data visualization on light backgrounds.
 }
 }
 \examples{

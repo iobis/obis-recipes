@@ -224,8 +224,14 @@ carto_map <- function(
 #'   \code{NULL}.
 #' @param breaks Numeric vector. Breakpoints for the colour scale.
 #'   Default: \code{c(0, 10, 100, 1000, 10000)}.
-#' @param colors Character vector of CSS colours, one per break.
-#'   Default: a blue-to-red diverging palette.
+#' @param colors Character vector of CSS colours, one per break. Ignored when
+#'   \code{palette} is set. Default: a blue-to-red diverging palette.
+#' @param palette Character or \code{NULL}. Name of an OBIS palette passed to
+#'   \code{obis_pal()} to generate \code{length(breaks)} colours automatically.
+#'   Accepts any name supported by \code{scale_fill_obis_cont()} (e.g.
+#'   \code{"thermal"}, \code{"rdbu"}, \code{"blues"}) or
+#'   \code{scale_color_obis_cat()} (e.g. \code{"okabe_ito"}). When \code{NULL}
+#'   (default) the \code{colors} argument is used as-is.
 #' @param legend Logical. Whether to add a categorical legend. Default:
 #'   \code{FALSE}.
 #'
@@ -241,6 +247,14 @@ carto_map <- function(
 #'     breaks   = c(0, 5, 50, 500, 5000),
 #'     legend   = TRUE
 #'   )
+#'
+#' # Use a named OBIS palette
+#' grey_map() |>
+#'   add_species_data(taxonid = 126436, palette = "thermal")
+#'
+#' blank_map() |>
+#'   add_species_data(taxonid = 126436, palette = "mako",
+#'                    breaks = c(0, 10, 100, 1000))
 #' }
 #'
 #' @export
@@ -251,8 +265,12 @@ add_species_data <- function(
     enddate = NULL,
     breaks = c(0, 10, 100, 1000, 10000),
     colors = c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"),
+    palette = NULL,
     legend = FALSE
 ) {
+    if (!is.null(palette)) {
+        colors <- obis_pal(palette, length(breaks))
+    }
     params <- list(
         taxonid = as.character(taxonid),
         startdate = startdate,
@@ -514,6 +532,8 @@ add_h3j_source_inline <- function(map, id, df, h3_col = "h3") {
 #'   Default: \code{list()} (no filter).
 #' @param show_occurrence_layer Logical. Whether to show the OBIS occurrence
 #'   grid layer beneath the H3 layer. Default: \code{FALSE}.
+#' @param legend Logical. Whether to show a min/max colour-bar legend at the
+#'   bottom of the widget. Default: \code{FALSE}.
 #' @param width,height Widget dimensions (CSS string or pixels). Default:
 #'   \code{NULL} (fills its container).
 #' @param elementId Optional HTML element ID for the widget.
@@ -551,6 +571,7 @@ maplibre_h3 <- function(
     zoom                  = 2,
     filter                = list(),
     show_occurrence_layer = FALSE,
+    legend                = FALSE,
     width                 = NULL,
     height                = NULL,
     elementId             = NULL
@@ -590,7 +611,8 @@ maplibre_h3 <- function(
         center              = center,
         zoom                = zoom,
         filter              = filter,
-        showOccurrenceLayer = show_occurrence_layer
+        showOccurrenceLayer = show_occurrence_layer,
+        legend              = legend
     )
 
     htmlwidgets::createWidget(
@@ -642,88 +664,63 @@ renderMaplibre_h3 <- function(expr, env = parent.frame(), quoted = FALSE) {
 }
 
 
-#' Create a standalone \code{maplibre_h3} widget without a package install
-#'
-#' A lightweight wrapper around \code{htmlwidgets::createWidget()} that wires
-#' up all CDN and local JS/CSS dependencies manually. Intended for development
-#' and local testing when the package is not installed.
-#'
-#' @param data A data frame with H3 cell index and value columns.
-#' @param h3_column Character. Column name for H3 indices. Default: \code{"h3"}.
-#' @param value_column Character. Column name for the numeric value.
-#'   Default: \code{"value"}.
-#' @param center Numeric vector \code{c(longitude, latitude)}. Initial map
-#'   centre. Default: \code{c(0, 25)}.
-#' @param zoom Numeric. Initial zoom level. Default: \code{2}.
-#' @param ... Ignored (reserved for future use).
-#'
-#' @return An \code{htmlwidget} object.
-#'
-#' @examples
-#' \dontrun{
-#' df <- data.frame(
-#'   h3    = c("8429a1fffffffff", "8429a3fffffffff"),
-#'   value = c(100, 500)
-#' )
-#' w <- maplibre_h3_local(df, center = c(3.5, 55), zoom = 4)
-#' w
-#' htmlwidgets::saveWidget(w, "map.html", selfcontained = TRUE)
-#' }
-#'
-#' @export
-maplibre_h3_local <- function(data, h3_column = "h3", value_column = "value",
-                               center = c(0, 25), zoom = 2, ...) {
-    widget_dep <- htmltools::htmlDependency(
-        name       = "maplibre_h3-binding",
-        version    = "0.1.0",
-        src        = c(file = normalizePath("R/widgets")),
-        script     = "maplibre_h3.js",
-        stylesheet = "maplibre_h3.css"
-    )
-    h3_dep <- htmltools::htmlDependency(
-        name    = "h3-js",
-        version = "4.1.0",
-        src     = c(href = "https://unpkg.com/h3-js@4.1.0/dist"),
-        script  = "h3-js.umd.js"
-    )
-    maplibre_dep <- htmltools::htmlDependency(
-        name       = "maplibre-gl",
-        version    = "4.7.1",
-        src        = c(href = "https://unpkg.com/maplibre-gl@4.7.1/dist"),
-        script     = "maplibre-gl.js",
-        stylesheet = "maplibre-gl.css"
-    )
-    deck_dep <- htmltools::htmlDependency(
-        name    = "deck-gl",
-        version = "9.0.7",
-        src     = c(href = "https://unpkg.com/deck.gl@9.0.7"),
-        script  = "dist.min.js"
-    )
-
-    x <- list(
-        h3Data      = lapply(seq_len(nrow(data)), function(i)
-            list(hex = data[[h3_column]][i], value = data[[value_column]][i])),
-        valueColumn = value_column,
-        colorRange  = list(c(35, 23, 92), c(30, 100, 200), c(80, 200, 220),
-                           c(180, 230, 100), c(255, 170, 30), c(210, 30, 20)),
-        extruded       = FALSE,
-        elevationScale = 1,
-        opacity        = 0.8,
-        center         = center,
-        zoom           = zoom,
-        filter         = list(),
-        showOccurrenceLayer = FALSE
-    )
-
-    htmlwidgets::createWidget(
-        name         = "maplibre_h3",
-        x            = x,
-        dependencies = list(h3_dep, maplibre_dep, deck_dep, widget_dep),
-        sizingPolicy = htmlwidgets::sizingPolicy(
-            defaultWidth  = "100%",
-            defaultHeight = 500,
-            viewer.fill   = TRUE,
-            browser.fill  = TRUE
-        )
-    )
-}
+# maplibre_h3_local — for development/testing only; not exported.
+# Wires up CDN dependencies manually so the widget can be run without
+# installing the package. Kept here for reference; use maplibre_h3() instead.
+#
+# maplibre_h3_local <- function(data, h3_column = "h3", value_column = "value",
+#                                center = c(0, 25), zoom = 2, ...) {
+#     widget_dep <- htmltools::htmlDependency(
+#         name       = "maplibre_h3-binding",
+#         version    = "0.1.0",
+#         src        = c(file = normalizePath("R/widgets")),
+#         script     = "maplibre_h3.js",
+#         stylesheet = "maplibre_h3.css"
+#     )
+#     h3_dep <- htmltools::htmlDependency(
+#         name    = "h3-js",
+#         version = "4.1.0",
+#         src     = c(href = "https://unpkg.com/h3-js@4.1.0/dist"),
+#         script  = "h3-js.umd.js"
+#     )
+#     maplibre_dep <- htmltools::htmlDependency(
+#         name       = "maplibre-gl",
+#         version    = "4.7.1",
+#         src        = c(href = "https://unpkg.com/maplibre-gl@4.7.1/dist"),
+#         script     = "maplibre-gl.js",
+#         stylesheet = "maplibre-gl.css"
+#     )
+#     deck_dep <- htmltools::htmlDependency(
+#         name    = "deck-gl",
+#         version = "9.0.7",
+#         src     = c(href = "https://unpkg.com/deck.gl@9.0.7"),
+#         script  = "dist.min.js"
+#     )
+#
+#     x <- list(
+#         h3Data      = lapply(seq_len(nrow(data)), function(i)
+#             list(hex = data[[h3_column]][i], value = data[[value_column]][i])),
+#         valueColumn = value_column,
+#         colorRange  = list(c(35, 23, 92), c(30, 100, 200), c(80, 200, 220),
+#                            c(180, 230, 100), c(255, 170, 30), c(210, 30, 20)),
+#         extruded       = FALSE,
+#         elevationScale = 1,
+#         opacity        = 0.8,
+#         center         = center,
+#         zoom           = zoom,
+#         filter         = list(),
+#         showOccurrenceLayer = FALSE
+#     )
+#
+#     htmlwidgets::createWidget(
+#         name         = "maplibre_h3",
+#         x            = x,
+#         dependencies = list(h3_dep, maplibre_dep, deck_dep, widget_dep),
+#         sizingPolicy = htmlwidgets::sizingPolicy(
+#             defaultWidth  = "100%",
+#             defaultHeight = 500,
+#             viewer.fill   = TRUE,
+#             browser.fill  = TRUE
+#         )
+#     )
+# }

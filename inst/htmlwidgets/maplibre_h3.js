@@ -206,7 +206,7 @@ HTMLWidgets.widget({
       }
 
       const colorScale = buildColorScale(x.colorRange, minVal, maxVal);
-      if (hasValue) buildLegend(legendEl, x.colorRange, minVal, maxVal);
+      if (hasValue && x.legend) buildLegend(legendEl, x.colorRange, minVal, maxVal);
 
       /* ── MapLibre instance ────────────────────────────────────────────── */
       map = new maplibregl.Map({

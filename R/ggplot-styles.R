@@ -9,7 +9,8 @@
     tol = c(
         "#4477AA", "#EE6677", "#228833", "#CCBB44",
         "#66CCEE", "#AA3377", "#BBBBBB"
-    )
+    ),
+    ibm = c("#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000")
 )
 
 #' @keywords internal
@@ -26,6 +27,26 @@
     deep = c(
         "#fdfecc", "#c5e8b8", "#6fc9b1", "#3d9ab5",
         "#1f5392", "#1d2e6e", "#0a0b43"
+    ),
+    # ColorBrewer diverging palettes (11 stops)
+    rdbu = c(
+        "#053061", "#2166ac", "#4393c3", "#92c5de", "#d1e5f0",
+        "#f7f7f7",
+        "#fddbc7", "#f4a582", "#d6604d", "#b2182b", "#67001f"
+    ),
+    prgn = c(
+        "#40004b", "#762a83", "#9970ab", "#c2a5cf", "#e7d4e8",
+        "#f7f7f7",
+        "#d9f0d3", "#a6dba0", "#5aae61", "#1b7837", "#00441b"
+    ),
+    # ColorBrewer single-hue sequential palettes (9 stops, light → dark)
+    blues = c(
+        "#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6",
+        "#4292c6", "#2171b5", "#08519c", "#08306b"
+    ),
+    greens = c(
+        "#f7fcf5", "#e5f5e0", "#c7e9c0", "#a1d99b", "#74c476",
+        "#41ab5d", "#238b45", "#006d2c", "#00441b"
     )
 )
 
@@ -237,12 +258,12 @@ theme_obis_dark <- function(
 #' The default `base_size` of `11` is comfortable for screen use and for
 #' figures saved at standard dimensions (≈ 7 × 5 in). When targeting the
 #' narrow column widths of print journals (e.g. 3.5 in single-column), either
-#' reduce `base_size` to 7–8 or use [obis_ggsave()], which rescales all
+#' reduce `base_size` to 7–8 or use `obis_ggsave()`, which rescales all
 #' elements proportionally to the output dimensions.
 #'
 #' @param base_size Numeric. Base font size in pt. Default `11`. Reduce to
 #'   7–8 pt when exporting at narrow journal column widths (≤ 3.5 in), or use
-#'   [obis_ggsave()] to handle scaling automatically.
+#'   `obis_ggsave()` to handle scaling automatically.
 #' @param base_family Character. Base font family. Default `"roboto"`. Swap for
 #'   `"helvetica"` or `"arial"` if those are available on your system.
 #' @param legend_position Character or `"none"`. Position of the legend.
@@ -346,12 +367,14 @@ theme_obis_pub <- function(
 #' Colorblind-safe categorical color scale
 #'
 #' Applies a discrete, colorblind-safe palette to the `color` aesthetic.
-#' Two palettes are available:
+#' Three palettes are available:
 #' - `"okabe_ito"` — the Okabe-Ito 8-color palette (default), widely
 #'   recommended for colorblind accessibility.
 #' - `"tol"` — Paul Tol's 7-color bright scheme, a good alternative.
+#' - `"ibm"` — IBM's 5-color colorblind-safe palette (blue, purple, magenta,
+#'   orange, gold), designed for data visualization on light backgrounds.
 #'
-#' @param palette Character. One of `"okabe_ito"` or `"tol"`.
+#' @param palette Character. One of `"okabe_ito"`, `"tol"`, or `"ibm"`.
 #'   Default `"okabe_ito"`.
 #' @param ... Additional arguments passed to [ggplot2::scale_color_manual()].
 #'
@@ -366,7 +389,7 @@ theme_obis_pub <- function(
 scale_color_obis_cat <- function(palette = "okabe_ito", ...) {
     colors <- .palettes_cat[[palette]]
     if (is.null(colors)) {
-        stop("Unknown palette '", palette, "'. Choose 'okabe_ito' or 'tol'.")
+        stop("Unknown palette '", palette, "'. Choose 'okabe_ito', 'tol', or 'ibm'.")
     }
     ggplot2::scale_color_manual(values = colors, ...)
 }
@@ -382,7 +405,7 @@ scale_color_obis_cat <- function(palette = "okabe_ito", ...) {
 scale_fill_obis_cat <- function(palette = "okabe_ito", ...) {
     colors <- .palettes_cat[[palette]]
     if (is.null(colors)) {
-        stop("Unknown palette '", palette, "'. Choose 'okabe_ito' or 'tol'.")
+        stop("Unknown palette '", palette, "'. Choose 'okabe_ito', 'tol', or 'ibm'.")
     }
     ggplot2::scale_fill_manual(values = colors, ...)
 }
@@ -392,7 +415,7 @@ scale_fill_obis_cat <- function(palette = "okabe_ito", ...) {
 #' Colorblind-safe continuous color scale
 #'
 #' Maps a continuous variable to a perceptually uniform, colorblind-safe
-#' color gradient. Five palettes are available:
+#' color gradient. Nine palettes are available:
 #'
 #' | Palette | Origin | Recommended for |
 #' |---------|--------|-----------------|
@@ -401,9 +424,14 @@ scale_fill_obis_cat <- function(palette = "okabe_ito", ...) {
 #' | `"thermal"` | cmocean | sea surface temperature |
 #' | `"haline"` | cmocean | salinity |
 #' | `"deep"` | cmocean | depth / bathymetry |
+#' | `"rdbu"` | ColorBrewer | diverging: blue → white → red |
+#' | `"prgn"` | ColorBrewer | diverging: purple → white → green |
+#' | `"blues"` | ColorBrewer | single-hue sequential (light → dark blue) |
+#' | `"greens"` | ColorBrewer | single-hue sequential (light → dark green) |
 #'
 #' @param palette Character. One of `"mako"`, `"cividis"`, `"thermal"`,
-#'   `"haline"`, or `"deep"`. Default `"mako"`.
+#'   `"haline"`, `"deep"`, `"rdbu"`, `"prgn"`, `"blues"`, or `"greens"`.
+#'   Default `"mako"`.
 #' @param direction Numeric. `1` for the palette as-is, `-1` to reverse.
 #'   Default `1`.
 #' @param ... Additional arguments passed to the underlying scale function.
@@ -459,6 +487,61 @@ scale_fill_obis_cont <- function(palette = "mako", direction = 1, ...) {
         }
         fn(colors = colors, ...)
     }
+}
+
+# ── Palette helper ─────────────────────────────────────────────────────────────
+
+#' Generate a colour vector from a named OBIS palette
+#'
+#' Interpolates or samples exactly `n` hex colours from any palette available
+#' in [scale_fill_obis_cont()] or [scale_color_obis_cat()]. Useful for passing
+#' OBIS palettes to functions that expect a plain character vector of colours,
+#' such as `add_species_data()` in the dynamic-map helpers.
+#'
+#' Continuous palettes (`"thermal"`, `"haline"`, `"deep"`, `"rdbu"`, `"prgn"`,
+#' `"blues"`, `"greens"`) are interpolated with [grDevices::colorRampPalette()],
+#' so any value of `n` is valid. Categorical palettes (`"okabe_ito"`, `"tol"`,
+#' `"ibm"`) are sampled from the first `n` colours; requesting more colours
+#' than the palette contains raises an error.
+#'
+#' @param name Character. Palette name — any value accepted by
+#'   [scale_fill_obis_cont()] (excluding viridis options) or
+#'   [scale_color_obis_cat()].
+#' @param n Integer. Number of colours to return.
+#' @param direction Numeric. `1` for the palette as-is, `-1` to reverse.
+#'   Default `1`.
+#'
+#' @return A character vector of `n` hex colour codes.
+#' @export
+#'
+#' @examples
+#' obis_pal("thermal", 5)
+#' obis_pal("rdbu", 7)
+#' obis_pal("blues", 3, direction = -1)
+#' obis_pal("okabe_ito", 3)
+obis_pal <- function(name, n, direction = 1) {
+    if (name %in% names(.palettes_cont)) {
+        cols <- .palettes_cont[[name]]
+        if (direction == -1) cols <- rev(cols)
+        return(grDevices::colorRampPalette(cols)(n))
+    }
+
+    if (name %in% names(.palettes_cat)) {
+        cols <- .palettes_cat[[name]]
+        if (direction == -1) cols <- rev(cols)
+        if (n > length(cols)) {
+            stop(
+                "Categorical palette '", name, "' has only ", length(cols),
+                " colours; cannot generate ", n, ". Use a continuous palette instead."
+            )
+        }
+        return(cols[seq_len(n)])
+    }
+
+    stop(
+        "Unknown palette '", name, "'. Valid names: ",
+        paste(c(names(.palettes_cont), names(.palettes_cat)), collapse = ", "), "."
+    )
 }
 
 # ── Colourbar guide ────────────────────────────────────────────────────────────

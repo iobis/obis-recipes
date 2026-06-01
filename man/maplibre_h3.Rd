@@ -17,6 +17,7 @@ maplibre_h3(
   zoom = 2,
   filter = list(),
   show_occurrence_layer = FALSE,
+  legend = FALSE,
   width = NULL,
   height = NULL,
   elementId = NULL
@@ -60,6 +61,9 @@ Default: \code{list()} (no filter).}
 
 \item{show_occurrence_layer}{Logical. Whether to show the OBIS occurrence
 grid layer beneath the H3 layer. Default: \code{FALSE}.}
+
+\item{legend}{Logical. Whether to show a min/max colour-bar legend at the
+bottom of the widget. Default: \code{FALSE}.}
 
 \item{width, height}{Widget dimensions (CSS string or pixels). Default:
 \code{NULL} (fills its container).}

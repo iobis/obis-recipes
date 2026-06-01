@@ -220,7 +220,7 @@ obis_ggsave("fig1.pdf", p_pub, width = 3.5, height = 2.5,
 
 ## Categorical color scales
 
-`scale_color_obis_cat()` and `scale_fill_obis_cat()` apply one of two
+`scale_color_obis_cat()` and `scale_fill_obis_cat()` apply one of three
 colorblind-safe discrete palettes.
 
 ### Okabe-Ito (default)
@@ -243,6 +243,28 @@ ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
     theme_obis()
 ```
 
+### IBM
+
+IBM's 5-color palette (blue, purple, magenta, orange, gold) is a good choice
+when the number of categories is ≤ 5 and a cooler, more corporate look is
+preferred. It works well on both light and dark backgrounds.
+
+```{r cat-ibm-color}
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+    geom_point(size = 2.5) +
+    scale_color_obis_cat(palette = "ibm") +
+    labs(title = "IBM palette", color = "Species") +
+    theme_obis()
+```
+
+```{r cat-ibm-dark}
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+    geom_point(size = 2.5) +
+    scale_color_obis_cat(palette = "ibm") +
+    labs(title = "IBM palette — dark theme", color = "Species") +
+    theme_obis_dark()
+```
+
 ### Fill variants
 
 ```{r cat-fill-bar}
@@ -255,16 +277,20 @@ ggplot(mpg, aes(class, fill = drv)) +
 
 ## Continuous color scales
 
-`scale_fill_obis_cont()` and `scale_color_obis_cont()` offer five
-perceptually uniform palettes:
+`scale_fill_obis_cont()` and `scale_color_obis_cont()` offer nine palettes —
+five multi-hue sequential, two diverging, and two single-hue sequential:
 
-| Palette | Recommended for |
-|---------|-----------------|
-| `"mako"` | abundance, density |
-| `"cividis"` | general-purpose (CVD-optimized) |
-| `"thermal"` | sea surface temperature |
-| `"haline"` | salinity |
-| `"deep"` | depth / bathymetry |
+| Palette | Origin | Recommended for |
+|---------|--------|-----------------|
+| `"mako"` | viridis | abundance, density |
+| `"cividis"` | viridis | general-purpose (CVD-optimized) |
+| `"thermal"` | cmocean | sea surface temperature |
+| `"haline"` | cmocean | salinity |
+| `"deep"` | cmocean | depth / bathymetry |
+| `"rdbu"` | ColorBrewer | diverging: blue → white → red |
+| `"prgn"` | ColorBrewer | diverging: purple → white → green |
+| `"blues"` | ColorBrewer | single-hue sequential (light → dark blue) |
+| `"greens"` | ColorBrewer | single-hue sequential (light → dark green) |
 
 ```{r cont-mako}
 ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
@@ -295,6 +321,51 @@ ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
     geom_tile() +
     scale_fill_obis_cont("deep", direction = -1) +
     labs(title = "Deep — bathymetry style (reversed)") +
+    theme_obis()
+```
+
+### Diverging palettes
+
+Diverging palettes are suited to data with a meaningful midpoint (zero,
+a reference temperature, a species mean, etc.). Both are 11-stop ColorBrewer
+palettes with a white neutral centre.
+
+```{r cont-rdbu}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("rdbu") +
+    labs(title = "RdBu — blue to red", x = "Waiting (min)", y = "Eruption (min)") +
+    theme_obis()
+```
+
+```{r cont-prgn}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("prgn") +
+    labs(title = "PRGn — purple to green", x = "Waiting (min)", y = "Eruption (min)") +
+    theme_obis()
+```
+
+### Single-hue sequential palettes
+
+`"blues"` and `"greens"` are 9-stop ColorBrewer palettes running from a near-
+white tint to a rich dark hue. They work well whenever a single variable needs
+to be highlighted without introducing hue contrast — for example, highlighting
+species richness or chlorophyll concentration on a neutral basemap.
+
+```{r cont-blues}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("blues") +
+    labs(title = "Blues", x = "Waiting (min)", y = "Eruption (min)") +
+    theme_obis()
+```
+
+```{r cont-greens}
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+    geom_tile() +
+    scale_fill_obis_cont("greens") +
+    labs(title = "Greens", x = "Waiting (min)", y = "Eruption (min)") +
     theme_obis()
 ```
 

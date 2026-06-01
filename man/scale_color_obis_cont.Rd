@@ -11,7 +11,8 @@ scale_fill_obis_cont(palette = "mako", direction = 1, ...)
 }
 \arguments{
 \item{palette}{Character. One of \code{"mako"}, \code{"cividis"}, \code{"thermal"},
-\code{"haline"}, or \code{"deep"}. Default \code{"mako"}.}
+\code{"haline"}, \code{"deep"}, \code{"rdbu"}, \code{"prgn"}, \code{"blues"}, or \code{"greens"}.
+Default \code{"mako"}.}
 
 \item{direction}{Numeric. \code{1} for the palette as-is, \code{-1} to reverse.
 Default \code{1}.}
@@ -23,7 +24,7 @@ A ggplot2 scale object.
 }
 \description{
 Maps a continuous variable to a perceptually uniform, colorblind-safe
-color gradient. Five palettes are available:
+color gradient. Nine palettes are available:
 }
 \details{
 \tabular{lll}{
@@ -33,6 +34,10 @@ color gradient. Five palettes are available:
    \code{"thermal"} \tab cmocean \tab sea surface temperature \cr
    \code{"haline"} \tab cmocean \tab salinity \cr
    \code{"deep"} \tab cmocean \tab depth / bathymetry \cr
+   \code{"rdbu"} \tab ColorBrewer \tab diverging: blue → white → red \cr
+   \code{"prgn"} \tab ColorBrewer \tab diverging: purple → white → green \cr
+   \code{"blues"} \tab ColorBrewer \tab single-hue sequential (light → dark blue) \cr
+   \code{"greens"} \tab ColorBrewer \tab single-hue sequential (light → dark green) \cr
 }
 }
 \examples{

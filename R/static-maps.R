@@ -398,7 +398,7 @@ get_occ_tiles <- function(
 #' @examples
 #' \dontrun{
 #' grey_map_s() |>
-#'     add_species_data(grid_data = get_occ_tiles(141438)) +
+#'     add_species_data_s(grid_data = get_occ_tiles(141438)) +
 #'     obis_scale(breaks = c(1, 10, 100, 1000, 10000))
 #' }
 obis_scale <- function(
@@ -522,11 +522,11 @@ prepare_grid_data <- function(
 #' \dontrun{
 #' # Geohash grid on a blank map, zoomed to data extent
 #' grid <- get_occ_tiles(taxonid = 141438)
-#' blank_map_s() |> add_species_data(grid_data = grid)
+#' blank_map_s() |> add_species_data_s(grid_data = grid)
 #'
 #' # Global view on a grey map with automatic breaks
 #' grey_map_s() |>
-#'     add_species_data(
+#'     add_species_data_s(
 #'         grid_data   = grid,
 #'         limit_by_bbox = FALSE,
 #'         auto_breaks = TRUE
@@ -534,14 +534,14 @@ prepare_grid_data <- function(
 #'
 #' # Custom breaks and colors, no legend
 #' blank_map_s() |>
-#'     add_species_data(
+#'     add_species_data_s(
 #'         grid_data = grid,
 #'         breaks    = c(1, 5, 50, 500),
 #'         colors    = c("#f7fbff", "#6baed6", "#2171b5", "#084594"),
 #'         legend    = FALSE
 #'     )
 #' }
-add_species_data <- function(
+add_species_data_s <- function(
     map,
     grid_data,
     limit_by_bbox = TRUE,

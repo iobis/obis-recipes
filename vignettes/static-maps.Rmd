@@ -27,7 +27,7 @@ is:
 1. Create a basemap with `blank_map_s()` or `grey_map_s()`.
 2. Convert raw occurrence records to a spatial grid with one of the
    `occ_to_*grid()` helpers, or fetch pre-gridded data from OBIS.
-3. Overlay the grid with `add_species_data()`.
+3. Overlay the grid with `add_species_data_s()`.
 
 ## Basemaps
 
@@ -163,19 +163,19 @@ tiles_dated <- get_occ_tiles(
 
 ## Plotting occurrence grids
 
-`add_species_data()` overlays a spatial grid on an existing basemap. By
+`add_species_data_s()` overlays a spatial grid on an existing basemap. By
 default it zooms to the bounding box of the data.
 
 ```{r plot-geohash, eval = FALSE}
 blank_map_s() |>
-    add_species_data(grid_data = grid_geohash)
+    add_species_data_s(grid_data = grid_geohash)
 ```
 
 Pass `auto_breaks = TRUE` to let ggplot2 choose break thresholds automatically:
 
 ```{r plot-h3-auto, eval = FALSE}
 grey_map_s() |>
-    add_species_data(
+    add_species_data_s(
         grid_data   = grid_h3,
         auto_breaks = TRUE
     )
@@ -185,7 +185,7 @@ Global view without zooming to the data extent:
 
 ```{r plot-tiles-global, eval = FALSE}
 grey_map_s() |>
-    add_species_data(
+    add_species_data_s(
         grid_data     = tiles,
         limit_by_bbox = FALSE
     )
@@ -195,7 +195,7 @@ Custom breaks, colours, and no legend:
 
 ```{r plot-custom, eval = FALSE}
 blank_map_s() |>
-    add_species_data(
+    add_species_data_s(
         grid_data = tiles,
         breaks    = c(1, 5, 50, 500),
         colors    = c("#f7fbff", "#6baed6", "#2171b5", "#084594"),
@@ -207,7 +207,7 @@ Regional view — Indo-Pacific:
 
 ```{r plot-regional, eval = FALSE}
 grey_map_s(plot_xlim = c(30, 160), plot_ylim = c(-40, 35)) |>
-    add_species_data(
+    add_species_data_s(
         grid_data     = tiles,
         limit_by_bbox = FALSE,
         plot_xlim     = c(30, 160),

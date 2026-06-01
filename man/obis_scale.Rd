@@ -38,7 +38,7 @@ matching the visual style used on the OBIS taxon pages.
 \examples{
 \dontrun{
 grey_map_s() |>
-    add_species_data(grid_data = get_occ_tiles(141438)) +
+    add_species_data_s(grid_data = get_occ_tiles(141438)) +
     obis_scale(breaks = c(1, 10, 100, 1000, 10000))
 }
 }
