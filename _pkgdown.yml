@@ -1,0 +1,74 @@
+url: https://iobis.github.io/obis-recipes
+
+template:
+  bootstrap: 5
+
+home:
+  strip_header: false
+  links:
+    - text: OBIS website
+      href: https://obis.org
+    - text: Report an issue
+      href: https://github.com/iobis/obis-recipes/issues
+
+navbar:
+  structure:
+    left: [intro, articles, reference]
+    right: [github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/iobis/obis-recipes
+
+articles:
+  - title: "Recipes"
+    navbar: ~
+    contents:
+      - ggplot-styles
+      - static-maps
+      - dynamic-maps
+
+reference:
+  - title: "ggplot2 styles"
+    desc: "Themes, color scales, palette helpers, and export utilities."
+    contents:
+      - theme_obis
+      - theme_obis_dark
+      - theme_obis_pub
+      - scale_color_obis_cat
+      - scale_fill_obis_cat
+      - scale_color_obis_cont
+      - scale_fill_obis_cont
+      - guide_colourbar_h
+      - obis_pal
+      - obis_add_logo
+      - obis_ggsave
+      - obis_load_fonts
+
+  - title: "Static maps"
+    desc: "ggplot2-based basemaps, grid converters, and occurrence layers."
+    contents:
+      - blank_map_s
+      - grey_map_s
+      - occ_to_geohashgrid
+      - occ_to_h3grid
+      - occ_to_a5grid
+      - get_occ_gridded
+      - get_occ_tiles
+      - prepare_grid_data
+      - obis_scale
+      - add_species_data_s
+
+  - title: "Dynamic maps"
+    desc: "Interactive WebGL maps via mapgl and the DeckGL H3 widget."
+    contents:
+      - blank_map
+      - grey_map
+      - carto_map
+      - add_species_data
+      - get_species_extent
+      - add_map_controls
+      - add_h3j_source_inline
+      - maplibre_h3
+      - maplibre_h3Output
+      - renderMaplibre_h3

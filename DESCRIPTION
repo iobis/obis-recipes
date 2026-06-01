@@ -1,18 +1,25 @@
 Package: obisrecipes
-Title: What the Package Does (One Line, Title Case)
+Title: Visualization and Mapping Tools for OBIS Data
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Authors@R: c(
+    person(given = "Silas", family = "Principe", email = "s.principe@unesco.org", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-8059-6304")),
+    person(given = "OBIS Secretariat", email = "helpdesk@obis.org", role = "aut"))
+Description: A curated collection of reusable visualization and mapping
+    functions for data from the Ocean Biodiversity Information System
+    (OBIS, <https://obis.org>). Provides ggplot2 themes and colorblind-safe
+    color scales tailored for marine data, static world basemaps with
+    bathymetry and species occurrence layers, and interactive WebGL maps
+    via 'mapgl' including a DeckGL H3 hexagon widget. Intended primarily
+    for internal use by the OBIS Secretariat and OBIS nodes.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-Depends: 
-    R (>= 3.5)
+Depends:
+    R (>= 4.1)
 LazyData: true
-Suggests: 
+Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr

@@ -38,7 +38,12 @@ Vignettes:
 }
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com}
+\strong{Maintainer}: Silas Principe \email{s.principe@unesco.org} (\href{https://orcid.org/0000-0002-8059-6304}{ORCID})
+
+Authors:
+\itemize{
+  \item OBIS Secretariat \email{helpdesk@obis.org}
+}
 
 }
 \keyword{internal}
