@@ -2,3 +2,4 @@
 tests/
 Quarto/
 inst/doc
+.DS_Store
