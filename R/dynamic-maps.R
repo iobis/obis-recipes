@@ -390,6 +390,22 @@ add_map_controls <- function(
 # Helpers
 # =============================================================================
 
+#' Fit a map to bounds
+#'
+#' Wrapper around \code{mapgl::fit_bounds()} so that \pkg{mapgl} does not need
+#' to be attached with \code{library(mapgl)} for the call to resolve.
+#'
+#' @param map A MapLibre or Mapbox map object.
+#' @param ... Arguments passed to \code{mapgl::fit_bounds()}.
+#'
+#' @return The map object with updated bounds.
+#'
+#' @export
+fit_bounds <- function(map, ...) {
+    mapgl::fit_bounds(map, ...)
+}
+
+
 #' Get the geographic extent of a species from OBIS
 #'
 #' Queries the OBIS API occurrence grid endpoint and returns an \code{sf}
