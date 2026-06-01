@@ -278,6 +278,6 @@ devtools::build_vignettes()
 
 ------------------------------------------------------------------------
 
-Developed by the [OBIS Secretariat](https://obis.org) · Hosted under the
-[Intergovernmental Oceanographic Commission
+Developed by the [OBIS Secretariat](https://obis.org) · Operating under
+the [Intergovernmental Oceanographic Commission
 (IOC)](https://www.ioc.unesco.org) of UNESCO.
