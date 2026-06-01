@@ -72,3 +72,4 @@ reference:
       - maplibre_h3
       - maplibre_h3Output
       - renderMaplibre_h3
+      - fit_bounds
