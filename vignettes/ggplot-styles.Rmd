@@ -28,7 +28,7 @@ guide, and a helper that overlays the OBIS + IOC logos on any finished plot.
 
 Load the Roboto font once per session before rendering:
 
-```{r fonts, eval = FALSE}
+```{r fonts}
 obis_load_fonts()
 ```
 

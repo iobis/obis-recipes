@@ -35,13 +35,13 @@ workflow mirrors the static-map approach:
 
 ### Blank white basemap
 
-```{r blank-globe, eval = FALSE}
+```{r blank-globe}
 blank_map()
 ```
 
 Switch to a flat Mercator projection:
 
-```{r blank-mercator, eval = FALSE}
+```{r blank-mercator}
 blank_map(projection = "mercator")
 ```
 
@@ -50,21 +50,21 @@ blank_map(projection = "mercator")
 `grey_map()` matches the style used on OBIS taxon pages: grey ocean, white
 land, optional GEBCO bathymetry overlay.
 
-```{r grey-default, eval = FALSE}
+```{r grey-default}
 grey_map()
 ```
 
-```{r grey-no-bath, eval = FALSE}
+```{r grey-no-bath}
 grey_map(add_bathymetry = FALSE)
 ```
 
 ### Carto basemaps
 
-```{r carto-positron, eval = FALSE}
+```{r carto-positron}
 carto_map()
 ```
 
-```{r carto-dark, eval = FALSE}
+```{r carto-dark}
 carto_map(carto_map = "dark-matter")
 ```
 
@@ -75,13 +75,13 @@ colour-scaled fill layer to the map.
 
 Default species (taxonid 126436) on a blank map:
 
-```{r occ-default, eval = FALSE}
+```{r occ-default}
 blank_map() |> add_species_data()
 ```
 
 Custom species with custom breaks and a legend:
 
-```{r occ-custom, eval = FALSE}
+```{r occ-custom}
 grey_map() |>
     add_species_data(
         taxonid = 955271,
@@ -92,7 +92,7 @@ grey_map() |>
 
 Fit the map view to the species extent after adding the layer:
 
-```{r occ-fit-bounds, eval = FALSE}
+```{r occ-fit-bounds}
 ext <- get_species_extent(taxonid = 955271)
 
 blank_map(projection = "mercator") |>
@@ -106,17 +106,17 @@ Pass any named OBIS palette via the `palette` argument and `add_species_data()`
 will call `obis_pal()` internally to generate one colour per break. This works
 with all palettes from `scale_fill_obis_cont()` and `scale_color_obis_cat()`.
 
-```{r occ-palette-thermal, eval = FALSE}
+```{r occ-palette-thermal}
 grey_map() |> add_species_data(taxonid = 126436, palette = "thermal")
 ```
 
-```{r occ-palette-blues, eval = FALSE}
+```{r occ-palette-blues}
 grey_map() |> add_species_data(taxonid = 126436, palette = "blues")
 ```
 
 Pair fewer breaks with a diverging palette:
 
-```{r occ-palette-rdbu, eval = FALSE}
+```{r occ-palette-rdbu}
 blank_map() |>
     add_species_data(
         taxonid = 126436,
@@ -129,7 +129,7 @@ blank_map() |>
 `obis_pal()` can also be called directly to preview colours or pass them to
 other `mapgl` layer functions:
 
-```{r obis-pal-direct, eval = FALSE}
+```{r obis-pal-direct}
 obis_pal("thermal", 5)
 #> [1] "#042333" "#4a69a9" "#cde6c9" "#f0a120" "#b12010"
 
@@ -142,13 +142,13 @@ obis_pal("blues", 4, direction = -1)  # reversed: dark → light
 `add_map_controls()` adds fullscreen, globe-projection toggle, and scale bar
 controls to any map.
 
-```{r controls-default, eval = FALSE}
+```{r controls-default}
 blank_map(projection = "none") |> add_map_controls()
 ```
 
 Disable the globe toggle and move the scale bar:
 
-```{r controls-custom, eval = FALSE}
+```{r controls-custom}
 grey_map() |>
     add_map_controls(globe = FALSE, scale_position = "bottom-right")
 ```
@@ -159,7 +159,7 @@ grey_map() |>
 and registers it as a vector source — no file or tile server needed. Use it
 with any `mapgl` layer function (e.g. `mapgl::add_fill_layer()`).
 
-```{r h3j-inline, eval = FALSE}
+```{r h3j-inline}
 library(duckdb)
 library(h3jsr)
 library(dplyr)
@@ -198,13 +198,13 @@ blank_map(projection = "mercator") |>
 basemap with a DeckGL `H3HexagonLayer`. Suitable for species richness, record
 counts, or any per-H3-cell metric.
 
-```{r h3-widget-flat, eval = FALSE}
+```{r h3-widget-flat}
 # df from the duckdb query above
 maplibre_h3(df, center = c(3.5, 55), zoom = 4)
 ```
 
 Enable 3-D extrusion with `extruded = TRUE`:
 
-```{r h3-widget-3d, eval = FALSE}
+```{r h3-widget-3d}
 maplibre_h3(df, extruded = TRUE, elevation_scale = 1000)
 ```
