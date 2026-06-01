@@ -28,8 +28,6 @@ workflow mirrors the static-map approach:
 
 > **Note:** All examples in this vignette require an internet connection
 > because the map tiles and OBIS occurrence data are fetched at render time.
-> The code chunks are marked `eval = FALSE` to allow offline builds; run them
-> interactively to see the output.
 
 ## Basemaps
 
@@ -166,6 +164,8 @@ library(dplyr)
 
 con <- dbConnect(duckdb())
 
+dbSendQuery(con, "install httpfs; load httpfs;")
+
 df <- dbGetQuery(con, "
     SELECT records, cell
     FROM read_parquet('s3://obis-products/speciesgrids/h3_7/*')
@@ -200,11 +200,11 @@ counts, or any per-H3-cell metric.
 
 ```{r h3-widget-flat}
 # df from the duckdb query above
-maplibre_h3(df, center = c(3.5, 55), zoom = 4)
+maplibre_h3(df, center = c(-50, -10), zoom = 2)
 ```
 
 Enable 3-D extrusion with `extruded = TRUE`:
 
 ```{r h3-widget-3d}
-maplibre_h3(df, extruded = TRUE, elevation_scale = 1000)
+maplibre_h3(df, center = c(-50, -10), zoom = 2, extruded = TRUE, elevation_scale = 1000)
 ```
